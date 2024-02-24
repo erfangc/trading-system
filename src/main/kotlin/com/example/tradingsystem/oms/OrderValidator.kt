@@ -1,5 +1,6 @@
 package com.example.tradingsystem.oms
 
+import com.example.tradingsystem.ValidationError
 import com.example.tradingsystem.ValidationException
 import com.example.tradingsystem.alphavantage.AlphaVantageService
 import org.springframework.dao.EmptyResultDataAccessException
@@ -11,12 +12,6 @@ class OrderValidator(
     private val alphaVantageService: AlphaVantageService,
     private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) {
-
-    data class ValidationError(
-        val code: String? = null,
-        val message: String? = null,
-        val field: String? = null,
-    )
 
     fun validateOrderOrThrow(ret: Order) {
         val validationErrors = validateAccount(ret) + validateSufficientCash(ret)
