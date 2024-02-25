@@ -3,6 +3,7 @@ package com.example.tradingsystem.oms
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 class OrderManagementController(

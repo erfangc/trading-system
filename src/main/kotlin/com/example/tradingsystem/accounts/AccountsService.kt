@@ -1,5 +1,6 @@
 package com.example.tradingsystem.accounts
 
+import com.example.tradingsystem.people.Person
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
@@ -64,6 +65,40 @@ class AccountsService(
             primaryOwner = req.primaryOwner,
             jointOwners = req.jointOwners,
         )
+    }
+
+    fun getAccounts(): List<Account> {
+        return namedParameterJdbcTemplate.jdbcTemplate.query(
+            """
+            select 
+                account_number,
+                account_type, 
+                p.id,
+                last_name, 
+                middle_name, 
+                first_name,
+                login_id,
+                birth_date,
+                mailing_address_id,
+                tax_id
+            from account a, person p 
+            where a.primary_owner_id = p.id
+            """.trimIndent()
+        ) { rs, _ ->
+            Account(
+                accountNumber = rs.getString("account_number"),
+                accountType = rs.getString("account_type"),
+                primaryOwner = Person(
+                    id = rs.getInt("id"),
+                    lastName = rs.getString("last_name"),
+                    middleName = rs.getString("middle_name"),
+                    firstName = rs.getString("first_name"),
+                    loginId = rs.getString("login_id"),
+                    birthDate = rs.getDate("birth_date").toLocalDate(),
+                    taxId = rs.getString("tax_id"),
+                ),
+            )
+        }
     }
 
 }

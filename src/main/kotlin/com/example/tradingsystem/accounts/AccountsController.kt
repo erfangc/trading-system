@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 class AccountsController(
@@ -19,10 +20,8 @@ class AccountsController(
     fun createAccount(@RequestBody createAccountRequest: CreateAccountRequest): Account {
         log.info("Creating primary owner ${createAccountRequest.primaryOwner}")
         val primaryOwner = createAccountRequest.primaryOwner?.let { peopleService.createOrUpdate(it) }
-
         log.info("Creating joint owners ${createAccountRequest.jointOwners}")
         val jointOwners = createAccountRequest.jointOwners?.map { jointOwner -> peopleService.createOrUpdate(jointOwner) }
-
         log.info("Creating account accountType=${createAccountRequest.accountType}")
         return accountsService.createAccount(createAccountRequest.copy(primaryOwner = primaryOwner, jointOwners = jointOwners))
     }
@@ -30,7 +29,7 @@ class AccountsController(
 
     @GetMapping("accounts")
     fun getAccounts(): List<Account> {
-        TODO()
+        return accountsService.getAccounts()
     }
 
     @GetMapping("account/{accountNumber}")

@@ -2,8 +2,9 @@ package com.example.tradingsystem
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.ExceptionHandler
-
+@CrossOrigin
 @ControllerAdvice
 class TradingSystemControllerAdvice {
     

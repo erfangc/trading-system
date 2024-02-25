@@ -3,6 +3,7 @@ package com.example.tradingsystem.ledger
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/")
 class LedgerController(private val ledgerService: LedgerService) {
