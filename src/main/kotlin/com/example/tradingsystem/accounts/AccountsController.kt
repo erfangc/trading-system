@@ -32,9 +32,9 @@ class AccountsController(
         return accountsService.getAccounts()
     }
 
-    @GetMapping("account/{accountNumber}")
-    fun getAccount(@PathVariable accountNumber: String): List<Account> {
-        TODO()
+    @GetMapping("accounts/{accountNumber}")
+    fun getAccount(@PathVariable accountNumber: String): Account {
+        return accountsService.getAccount(accountNumber)
     }
 
 }
