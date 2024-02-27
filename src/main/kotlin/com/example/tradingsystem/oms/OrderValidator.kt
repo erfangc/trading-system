@@ -2,14 +2,14 @@ package com.example.tradingsystem.oms
 
 import com.example.tradingsystem.ValidationError
 import com.example.tradingsystem.ValidationException
-import com.example.tradingsystem.alphavantage.AlphaVantageService
+import com.example.tradingsystem.polygon.PolygonService
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 
 @Service
 class OrderValidator(
-    private val alphaVantageService: AlphaVantageService,
+    private val polygonService: PolygonService,
     private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) {
 
@@ -45,7 +45,8 @@ class OrderValidator(
                 0.0
             }
             if (securityId != null && qty != null && cash != null) {
-                val quote = alphaVantageService.getQuote(securityId)
+                val previousClose = polygonService.previousClose(securityId)
+                val quote = previousClose.results?.get(0)?.c
                 if (quote == null) {
                     errors.add(ValidationError(message = "security_id is not valid for trading"))
                 } else {

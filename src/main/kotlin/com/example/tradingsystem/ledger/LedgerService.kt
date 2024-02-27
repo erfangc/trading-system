@@ -197,13 +197,30 @@ class LedgerService(
 
     fun getPositions(accountNumber: String): List<Position> {
         return namedParameterJdbcTemplate.query(
-            "select * from positions where account_number = :account_number",
+            """
+                select p.account_number,
+                       security_id,
+                       qty,
+                       IF(security_id = 'USD.CASH', qty, px.close_price * qty) as market_value,
+                       daily_change_percent,
+                       daily_change,
+                       updated,
+                       close_price
+                from positions p
+                         left join prices px on p.security_id = px.ticker
+                where account_number = :account_number
+            """.trimIndent(),
             mapOf("account_number" to accountNumber)
         ) { rs, _ ->
             Position(
                 accountNumber = rs.getString("account_number"),
                 securityId = rs.getString("security_id"),
                 qty = rs.getDouble("qty"),
+                marketValue = rs.getDouble("market_value"),
+                dailyChangePercent = rs.getDouble("daily_change_percent"),
+                dailyChange = rs.getDouble("daily_change"),
+                updated = rs.getTimestamp("updated")?.toInstant(),
+                closePrice = rs.getDouble("close_price"),
             )
         }
     }
